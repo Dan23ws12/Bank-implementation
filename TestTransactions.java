@@ -6,7 +6,9 @@ public class TestTransactions{
         testDepTransac();
         testWithdrawTransac();
     }
-
+    /**
+     * performs basic tests on the deposit transaction
+     */
     private static void testDepTransac(){
         BankAccount acc1 = new BankAccount("Sing", "Song");
         DepositTransac transac = new DepositTransac(300, acc1);
@@ -26,6 +28,10 @@ public class TestTransactions{
 
     }
 
+
+    /**
+     * performs basic tests on the withdraw transaction
+     */
     private static void testWithdrawTransac(){
         BankAccount acc1 = new BankAccount("Sing", "Song");
         boolean failed = false;
@@ -57,6 +63,10 @@ public class TestTransactions{
         }
     }
 
+
+    /**
+     * tests all transactions on whether they handle transaction done with 0 money properly
+     */
     private static void testZeroTransac(){
         BankAccount acc1 = new BankAccount("Sing", "Song");
         BankAccount acc2 = new BankAccount("TiL", "TOK");
@@ -81,6 +91,9 @@ public class TestTransactions{
         }
     }
 
+    /**
+     * tests all transactions on whether they handle transaction done with negative money properly
+     */
     private static void testNegativeTransac(){
         BankAccount acc1 = new BankAccount("Sing", "Song");
         BankAccount acc2 = new BankAccount("TiL", "TOK");
@@ -106,6 +119,11 @@ public class TestTransactions{
 
     }
 
+
+    /**
+     * tests all transactions on whether they handle transaction done with none existent accounts 
+     * properly
+     */
     private static void testNullTransac(){
         BankAccount acc1 = new BankAccount("Sing", "Song");
         BankAccount acc2 = new BankAccount("TiL", "TOK");
