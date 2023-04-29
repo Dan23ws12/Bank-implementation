@@ -37,7 +37,6 @@ class DepositTransac extends Transaction{
         }
         else{
             this.account.deposit(this.amount);
-            System.out.println("the amount was successfully deposited");
             return true;
         }
     }
@@ -47,11 +46,9 @@ class DepositTransac extends Transaction{
      */
     public boolean argCheck(){
         if (this.amount < 0){
-            System.out.println("U cannot deposit a negative amount");
             return false;
         }
         if (this.account == null){
-            System.out.println("No account to deposit to");
             return false;
         }
         return true;
@@ -79,10 +76,8 @@ class WithdrawTransac extends Transaction{
             return false;
         }
         else if (this.account.withdraw(this.amount)){
-            System.out.println("the amount was successfully withdrawn");
             return true;
         }
-        System.out.println("the amount wasn't withdrawn");
         return false;
     }
 
@@ -91,11 +86,9 @@ class WithdrawTransac extends Transaction{
      */
     public boolean argCheck(){
         if (this.amount < 0){
-            System.out.println("U cannot withdraw a negative amount");
             return false;
         }
         if (this.account == null){
-            System.out.println("No account to withdraw from");
             return false;
         }
         return true;
@@ -125,10 +118,8 @@ class TransferTransac extends Transaction{
         boolean wasWithdrawn = this.withdrawAccount.withdraw(this.amount);
         if (wasWithdrawn){
             this.depositAccount.deposit(this.amount);
-            System.out.println("amount was transferred successfully");
             return true;
         }
-        System.out.println("Amount wasn't transferred");
         return false;
     }
 
@@ -137,15 +128,12 @@ class TransferTransac extends Transaction{
      */
     public boolean argCheck(){
         if (amount < 0){
-            System.out.println("Cannot transfer negative amount");
             return false;
         }
         else if (this.depositAccount == null){
-            System.out.println("no account to deposit to");
             return false;
         }
         else if (this.withdrawAccount == null){
-            System.out.println("no account to withdraw from to");
             return false;
         }
         return true;

@@ -4,6 +4,7 @@ public class TestTransactions{
         testNegativeTransac();
         testNullTransac();
         testDepTransac();
+        testWithdrawTransac();
     }
 
     private static void testDepTransac(){
@@ -23,6 +24,37 @@ public class TestTransactions{
             System.out.println("passed all deposit tests\n");
         }
 
+    }
+
+    private static void testWithdrawTransac(){
+        BankAccount acc1 = new BankAccount("Sing", "Song");
+        boolean failed = false;
+    
+        WithdrawTransac transac = new WithdrawTransac(203, acc1);
+        if(transac.commit()){
+            System.out.println("Withdrew over max amount\n");
+            System.out.printf("Balance: %f\n", acc1.getBalance());
+            failed = true;
+        }
+        transac = new WithdrawTransac(32, acc1);
+        if (!transac.commit()){
+            System.out.println("Couldn't withdraw 32 from fresh account\n");
+            failed = true;
+        }
+        if(acc1.getBalance() != 168.0){
+            System.out.println("Withdrew a different amount\n");
+            System.out.printf("Balance: %f\n", acc1.getBalance());
+            failed = true;
+        }
+        transac = new WithdrawTransac(170, acc1);
+        if(transac.commit()){
+            System.out.println("Withdrew over max amount\n");
+            System.out.printf("Balance: %f\n", acc1.getBalance());
+            failed = true;
+        }
+        if (!failed){
+            System.out.println("Passed all withdraw tests\n");
+        }
     }
 
     private static void testZeroTransac(){
