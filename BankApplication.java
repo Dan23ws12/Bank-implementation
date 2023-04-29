@@ -17,11 +17,26 @@ public class BankApplication {
         double amount = Double.parseDouble(sc.nextLine());
         DepositTransac depTransac = new DepositTransac(amount, obj1);
         WithdrawTransac widTransac = new WithdrawTransac(amount, obj2);
-        depTransac.commit();
-        widTransac.commit();
-        System.out.printf("account1 balance: %f \n", obj1.getBalance());
-        System.out.printf("account2 balance: %f \n", obj2.getBalance());
+        TransacQueue queue = new TransacQueue();
+        queue.enqueue(widTransac);
+        queue.enqueue(depTransac);
+        runTransactions(obj1, obj2, queue);
         sc.close();
+    }
+
+    public static void runTransactions(BankAccount acc1, BankAccount acc2, TransacQueue queue){
+        if (queue != null){
+            while(!queue.isEmpty()){
+                Transaction transac = queue.dequeue();
+                if (transac.commit()){
+                    System.out.println("Transaction was completed");
+                }else{
+                    System.out.println("Transaction wasn't completed");
+                }
+                System.out.printf("acc1 balance: %f \n", acc1.getBalance());
+                System.out.printf("acc2 balance %f \n", acc2.getBalance());
+            }
+        }
     }
 }
 
