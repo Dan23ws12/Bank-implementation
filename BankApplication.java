@@ -64,7 +64,6 @@ class BankAccount{
             bal-=amt;
             return true;
         }
-        System.out.println("Bank balance insufficient");
         return false;
     }
 
