@@ -36,4 +36,3 @@ CREATE TRIGGER maxAmountTrigger
     BEFORE INSERT ON Transaction
     EXECUTE FUNCTION maxAmount();
 
-
