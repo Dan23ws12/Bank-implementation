@@ -25,11 +25,6 @@
                 width: 50px;
             }
         </style>
-        <script>
-            function committed(){
-                document.getElementById("ps").innerHTML =document.getElementById("user1");
-            }
-        </script>  
     </head>
     <body>
         <h1>
@@ -37,9 +32,9 @@
             Welcome to Mighty arrows bank
         </h1>
         <form >
-             What is your username? <br> 
+             Username <br> 
              <input type="text" id="user1" name="user1"> <br> 
-             What transaction will it be ? <br>
+             Type of transaction <br>
              <select id="transactype" name="transactype">
                 <option value="deposit"> Deposit</option>
                 <option value="withdraw"> Withdrawal</option>
@@ -49,5 +44,10 @@
              </button>
         </form>
         <p id = "ps"> </p>
+        <script>
+            function committed(){
+                document.getElementById("ps").innerHTML =document.getElementById("user1");
+            }
+        </script>  
     </body>
 </html>
