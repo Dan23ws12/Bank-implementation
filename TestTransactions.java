@@ -1,25 +1,37 @@
+/**import org.junit.jupiter.*; */
+
 public class TestTransactions{
+    private static BankAccount account1;
+    private static BankAccount account2;
+    private static Transaction transac;
     public static void main(String[] args){
-        testZeroTransac();
-        testNegativeTransac();
-        testNullTransac();
-        testDepTransac();
-        testWithdrawTransac();
+        testZeroTransaction();
+        testNegativeTransaction();
+        testNullTransaction();
+        testDepTransaction();
+        testWithdrawTransaction();
     }
     /**
      * performs basic tests on the deposit transaction
      */
-    private static void testDepTransac(){
-        BankAccount acc1 = new BankAccount("Sing", "Song");
-        DepositTransac transac = new DepositTransac(300, acc1);
+
+    private static void initAllTests(){
+        account1 = new BankAccount("Sing", "Song");
+        account2 = new BankAccount("TiL", "TOK");
+    }
+    
+    
+    private static void testDepTransaction(){
+       
+        DepositTransaction transac = new DepositTransaction(300, account1);
         boolean failed = false;
         if (!transac.commit()){
             System.out.println("Failed basic deposit test\n");
             failed = true;
         }
-        if (acc1.getBalance() != 500.0){
+        if (account1.getBalance() != 500.0){
             System.out.println("Balance changed after adding 0\n");
-            System.out.printf("%f\n", acc1.getBalance());
+            System.out.printf("%f\n", account1.getBalance());
             failed = true;
         }
         if(!failed){
@@ -32,30 +44,30 @@ public class TestTransactions{
     /**
      * performs basic tests on the withdraw transaction
      */
-    private static void testWithdrawTransac(){
-        BankAccount acc1 = new BankAccount("Sing", "Song");
+    private static void testWithdrawTransaction(){
+        account1 = new BankAccount("Sing", "Song");
         boolean failed = false;
     
-        WithdrawTransac transac = new WithdrawTransac(203, acc1);
+        transac = new WithdrawTransaction(203, account1);
         if(transac.commit()){
             System.out.println("Withdrew over max amount\n");
-            System.out.printf("Balance: %f\n", acc1.getBalance());
+            System.out.printf("Balance: %f\n", account1.getBalance());
             failed = true;
         }
-        transac = new WithdrawTransac(32, acc1);
+        transac = new WithdrawTransaction(32, account1);
         if (!transac.commit()){
             System.out.println("Couldn't withdraw 32 from fresh account\n");
             failed = true;
         }
-        if(acc1.getBalance() != 168.0){
+        if(account1.getBalance() != 168.0){
             System.out.println("Withdrew a different amount\n");
-            System.out.printf("Balance: %f\n", acc1.getBalance());
+            System.out.printf("Balance: %f\n", account1.getBalance());
             failed = true;
         }
-        transac = new WithdrawTransac(170, acc1);
+        transac = new WithdrawTransaction(170, account1);
         if(transac.commit()){
             System.out.println("Withdrew over max amount\n");
-            System.out.printf("Balance: %f\n", acc1.getBalance());
+            System.out.printf("Balance: %f\n", account1.getBalance());
             failed = true;
         }
         if (!failed){
@@ -67,21 +79,20 @@ public class TestTransactions{
     /**
      * tests all transactions on whether they handle transaction done with 0 money properly
      */
-    private static void testZeroTransac(){
-        BankAccount acc1 = new BankAccount("Sing", "Song");
-        BankAccount acc2 = new BankAccount("TiL", "TOK");
-        Transaction transac = new DepositTransac(0, acc1);
+    private static void testZeroTransaction(){
+        
+        transac = new DepositTransaction(0, account1);
         boolean failed = false;
         if (!transac.commit()){
             System.out.println("Failed to add 0 to bank account\n");
             failed = true;
         }
-        transac = new WithdrawTransac(0, acc2);
+        transac = new WithdrawTransaction(0, account2);
         if (!transac.commit()){
             System.out.println("Failed to withdraw 0 to bank account\n");
             failed = true;
         }
-        transac = new TransferTransac(0,acc1, acc2);
+        transac = new TransferTransaction(0,account1, account2);
         if (!transac.commit()){
             System.out.println("Failed to transfer 0 to bank account\n");
             failed = true;
@@ -94,21 +105,21 @@ public class TestTransactions{
     /**
      * tests all transactions on whether they handle transaction done with negative money properly
      */
-    private static void testNegativeTransac(){
-        BankAccount acc1 = new BankAccount("Sing", "Song");
-        BankAccount acc2 = new BankAccount("TiL", "TOK");
-        Transaction transac = new DepositTransac(-20, acc1);
+    private static void testNegativeTransaction(){
+        account1 = new BankAccount("Sing", "Song");
+        account2 = new BankAccount("TiL", "TOK");
+        transac = new DepositTransaction(-20, account1);
         boolean failed = false;
         if (transac.commit()){
             System.out.println("Deposited a negative amount to bank account\n");
             failed = true;
         }
-        transac = new WithdrawTransac(-35, acc1);
+        transac = new WithdrawTransaction(-35, account1);
         if (transac.commit()){
             System.out.println("Withdrew a negative amount from bank account\n");
             failed = true;
         }
-        transac = new TransferTransac(-23,acc1, acc2);
+        transac = new TransferTransaction(-23,account1, account2);
         if (transac.commit()){
             System.out.println("Transfered a negative amount to bank account\n");
             failed = true;
@@ -124,10 +135,8 @@ public class TestTransactions{
      * tests all transactions on whether they handle transaction done with none existent accounts 
      * properly
      */
-    private static void testNullTransac(){
-        BankAccount acc1 = new BankAccount("Sing", "Song");
-        BankAccount acc2 = new BankAccount("TiL", "TOK");
-        Transaction transac = new DepositTransac(20, null);
+    private static void testNullTransaction(){
+        transac = new DepositTransaction(20, null);
         boolean failed = false;
         try{
             failed = transac.commit();
@@ -136,7 +145,7 @@ public class TestTransactions{
             System.out.println("Tried to deposit into a non existent account\n");
             failed = true;
         }
-        transac = new WithdrawTransac(0, null);
+        transac = new WithdrawTransaction(0, null);
         try{
             failed = transac.commit();
         }
@@ -144,7 +153,7 @@ public class TestTransactions{
             System.out.println("Tried to deposit into a non existent account\n");
             failed = true;
         }
-        transac = new TransferTransac(0,null, acc2);
+        transac = new TransferTransaction(0,null, account2);
         try{
             failed = transac.commit();
         }
@@ -152,7 +161,7 @@ public class TestTransactions{
             System.out.println("Tried to transfer into a existent account\n");
             failed = true;
         }
-        transac = new TransferTransac(0,acc1, null);
+        transac = new TransferTransaction(0,account1, null);
         try{
             failed = transac.commit();
         }

@@ -18,12 +18,12 @@ abstract class Transaction {
 /**
  * a transaction that deposits money into an account
  */
-class DepositTransac extends Transaction{
+class DepositTransaction extends Transaction{
 
     private double amount;
     private BankAccount account;
 
-    DepositTransac(double amount, BankAccount account){
+    DepositTransaction(double amount, BankAccount account){
         this.amount = amount;
         this.account = account;
     }
@@ -58,11 +58,11 @@ class DepositTransac extends Transaction{
 /**
  * A transaction that withdraws money from an account
  */
-class WithdrawTransac extends Transaction{
+class WithdrawTransaction extends Transaction{
     private double amount;
     private BankAccount account;
 
-    WithdrawTransac(double amount, BankAccount account){
+    WithdrawTransaction(double amount, BankAccount account){
         this.amount = amount;
         this.account = account;
     }
@@ -85,10 +85,7 @@ class WithdrawTransac extends Transaction{
      * returns true if the amount is nonnegative and the account exists, false otherwise
      */
     public boolean argCheck(){
-        if (this.amount < 0){
-            return false;
-        }
-        if (this.account == null){
+        if ((this.amount < 0) || (this.account == null)){
             return false;
         }
         return true;
@@ -96,13 +93,13 @@ class WithdrawTransac extends Transaction{
 
 }
 
-class TransferTransac extends Transaction{
+class TransferTransaction extends Transaction{
     private double amount;
     private BankAccount depositAccount; // deposits the money in this account
     private BankAccount withdrawAccount; //withdraws money from this account
 
 
-    TransferTransac(double amount, BankAccount depAcc, BankAccount widAcc){
+    TransferTransaction(double amount, BankAccount depAcc, BankAccount widAcc){
         this.amount = amount;
         this.depositAccount = depAcc;
         this.withdrawAccount = widAcc;
@@ -127,15 +124,10 @@ class TransferTransac extends Transaction{
      * returns true if the amount is nonnegative and both accounts exist, false otherwise
      */
     public boolean argCheck(){
-        if (amount < 0){
+        if ((amount < 0) || (this.depositAccount == null) || (this.withdrawAccount == null)){
             return false;
         }
-        else if (this.depositAccount == null){
-            return false;
-        }
-        else if (this.withdrawAccount == null){
-            return false;
-        }
+        
         return true;
     }
 
@@ -145,10 +137,10 @@ class TransferTransac extends Transaction{
 /**
  * This class is a queue of transactions, makes working with multiple transactions easier
  */
-class TransacQueue{
+class TransactionQueue{
     private ArrayList<Transaction> queue;
 
-    TransacQueue(){
+    TransactionQueue(){
         this.queue = new ArrayList<Transaction>();
     }
 
@@ -168,13 +160,10 @@ class TransacQueue{
 
 }
 
-class TransacBuilder{
-    public String[] requestTypes = {"deposit", "withdraw", "transfer"};
+class TransactionBuilder{
+    public static String[] requestTypes = {"deposit", "withdraw", "transfer"};
 
-    TransacBuilder(){
     
-    }
-
     /**
      * 
      * @param request: string representing transaction type
@@ -183,16 +172,16 @@ class TransacBuilder{
      * @param account2: in a transfer transaction, the amount is deposited into this account
      * @return the appropriate transaction based on the request
      */
-    Transaction getTransac(String request, double amount, BankAccount account1, BankAccount account2){
+    public static Transaction getTransaction(String request, double amount, BankAccount account1, BankAccount account2){
         Transaction newTransac;
-        if (request.equals(this.requestTypes[0])){
-            newTransac = new DepositTransac(amount, account1);
+        if (request.equals(requestTypes[0])){
+            newTransac = new DepositTransaction(amount, account1);
         }
-        else if (request.equals(this.requestTypes[1])){
-            newTransac = new WithdrawTransac(amount, account1);
+        else if (request.equals(requestTypes[1])){
+            newTransac = new WithdrawTransaction(amount, account1);
         }
-        else if (request.equals(this.requestTypes[2])){
-            newTransac = new TransferTransac(amount, account2, account1);
+        else if (request.equals(requestTypes[2])){
+            newTransac = new TransferTransaction(amount, account2, account1);
         }
         else{
             newTransac = null;

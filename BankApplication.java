@@ -15,16 +15,16 @@ public class BankApplication {
         BankAccount obj2=new BankAccount(name,customerId);
         System.out.println("Enter the amount");
         double amount = Double.parseDouble(sc.nextLine());
-        DepositTransac depTransac = new DepositTransac(amount, obj1);
-        WithdrawTransac widTransac = new WithdrawTransac(amount, obj2);
-        TransacQueue queue = new TransacQueue();
+        DepositTransaction depTransac = new DepositTransaction(amount, obj1);
+        WithdrawTransaction widTransac = new WithdrawTransaction(amount, obj2);
+        TransactionQueue queue = new TransactionQueue();
         queue.enqueue(widTransac);
         queue.enqueue(depTransac);
         runTransactions(obj1, obj2, queue);
         sc.close();
     }
 
-    public static void runTransactions(BankAccount acc1, BankAccount acc2, TransacQueue queue){
+    public static void runTransactions(BankAccount acc1, BankAccount acc2, TransactionQueue queue){
         if (queue != null){
             while(!queue.isEmpty()){
                 Transaction transac = queue.dequeue();

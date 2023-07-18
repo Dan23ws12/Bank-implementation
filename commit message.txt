@@ -1,0 +1,3 @@
+tried to make TestTransactions.java use junit
+renamed all _Transac_ classes to _Transaction_ classes
+TransactionBuilder will prob be renamed to TransactionFactory
