@@ -3,117 +3,133 @@ import java.util.ArrayList;
 /**
  * abstract class representing a transaction
  */
-abstract class Transaction { 
+abstract class Transaction {
     private double amount;
 
     abstract public boolean commit();
 
-    public double getAmount(){
+    abstract public boolean argCheck();
+
+    public double getAmount() {
         return this.amount;
     }
 
-    abstract public boolean argCheck();
+    public BankAccount getDepositAccount() {
+        return null;
+    }
+
+    public BankAccount getWithdrawAccount() {
+        return null;
+    }
 }
 
 /**
  * a transaction that deposits money into an account
  */
-class DepositTransaction extends Transaction{
+class DepositTransaction extends Transaction {
 
     private double amount;
-    private BankAccount account;
+    private BankAccount depositAccount;
 
-    DepositTransaction(double amount, BankAccount account){
+    public DepositTransaction(double amount, BankAccount account) {
         this.amount = amount;
-        this.account = account;
+        this.depositAccount = account;
     }
 
     /**
      * returns true if the money was deposited, false otherwise
      */
-    public boolean commit(){
-        if (!this.argCheck()){
+    @Override
+    public boolean commit() {
+        if (!this.argCheck()) {
             return false;
-        }
-        else{
-            this.account.deposit(this.amount);
+        } else {
+            this.depositAccount.deposit(this.amount);
             return true;
         }
     }
 
     /**
-     * returns true if the amount is nonnegative and the account exists, false otherwise
+     * returns true if the amount is nonnegative and the account exists, false
+     * otherwise
      */
-    public boolean argCheck(){
-        if (this.amount < 0){
-            return false;
-        }
-        if (this.account == null){
+    @Override
+    public boolean argCheck() {
+        if ((this.amount < 0) || (this.depositAccount == null)) {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public BankAccount getDepositAccount() {
+        return this.depositAccount;
     }
 }
 
 /**
  * A transaction that withdraws money from an account
  */
-class WithdrawTransaction extends Transaction{
+class WithdrawTransaction extends Transaction {
     private double amount;
-    private BankAccount account;
+    private BankAccount withdrawAccount;
 
-    WithdrawTransaction(double amount, BankAccount account){
+    public WithdrawTransaction(double amount, BankAccount account) {
         this.amount = amount;
-        this.account = account;
+        this.withdrawAccount = account;
     }
-
 
     /**
      * returns true if the money was withdrawn, false otherwise
      */
-    public boolean commit(){
-        if (!this.argCheck()){
+    @Override
+    public boolean commit() {
+        if (!this.argCheck()) {
             return false;
         }
-        else if (this.account.withdraw(this.amount)){
-            return true;
-        }
-        return false;
+        return this.withdrawAccount.withdraw(this.amount);
     }
 
     /**
-     * returns true if the amount is nonnegative and the account exists, false otherwise
+     * returns true if the amount is nonnegative and the account exists, false
+     * otherwise
      */
-    public boolean argCheck(){
-        if ((this.amount < 0) || (this.account == null)){
+    @Override
+    public boolean argCheck() {
+        if ((this.amount < 0) || (this.withdrawAccount == null)) {
             return false;
         }
         return true;
     }
 
+    @Override
+    public BankAccount getWithdrawAccount() {
+        return this.withdrawAccount;
+    }
 }
 
-class TransferTransaction extends Transaction{
+class TransferTransaction extends Transaction {
     private double amount;
     private BankAccount depositAccount; // deposits the money in this account
-    private BankAccount withdrawAccount; //withdraws money from this account
+    private BankAccount withdrawAccount; // withdraws money from this account
 
-
-    TransferTransaction(double amount, BankAccount depAcc, BankAccount widAcc){
+    public TransferTransaction(double amount, BankAccount depAcc, BankAccount widAcc) {
         this.amount = amount;
         this.depositAccount = depAcc;
         this.withdrawAccount = widAcc;
     }
 
     /**
-     * returns true if the money was successfully transferred from one account to another, false otherwise
+     * returns true if the money was successfully transferred from one account to
+     * another, false otherwise
      */
-    public boolean commit(){
-        if (!this.argCheck()){
+    @Override
+    public boolean commit() {
+        if (!this.argCheck()) {
             return false;
         }
         boolean wasWithdrawn = this.withdrawAccount.withdraw(this.amount);
-        if (wasWithdrawn){
+        if (wasWithdrawn) {
             this.depositAccount.deposit(this.amount);
             return true;
         }
@@ -121,38 +137,38 @@ class TransferTransaction extends Transaction{
     }
 
     /**
-     * returns true if the amount is nonnegative and both accounts exist, false otherwise
+     * returns true if the amount is nonnegative and both accounts exist, false
+     * otherwise
      */
-    public boolean argCheck(){
-        if ((amount < 0) || (this.depositAccount == null) || (this.withdrawAccount == null)){
+    @Override
+    public boolean argCheck() {
+        if ((amount < 0) || (this.depositAccount == null) || (this.withdrawAccount == null)) {
             return false;
         }
-        
         return true;
     }
-
 }
 
-
 /**
- * This class is a queue of transactions, makes working with multiple transactions easier
+ * This class is a queue of transactions, makes working with multiple
+ * transactions easier
  */
-class TransactionQueue{
+class TransactionQueue {
     private ArrayList<Transaction> queue;
 
-    TransactionQueue(){
+    TransactionQueue() {
         this.queue = new ArrayList<Transaction>();
     }
 
-    boolean isEmpty(){
+    boolean isEmpty() {
         return (this.queue.size() == 0);
     }
 
-    void enqueue(Transaction transac){
-        this.queue.add(0, transac);
+    void enqueue(Transaction transac) {
+        this.queue.add(transac);
     }
 
-    Transaction dequeue(){
+    Transaction dequeue() {
         Transaction transac = this.queue.get(0);
         this.queue.remove(transac);
         return transac;
@@ -160,32 +176,40 @@ class TransactionQueue{
 
 }
 
-class TransactionBuilder{
-    public static String[] requestTypes = {"deposit", "withdraw", "transfer"};
+class TransactionFactory {
+    public static String depositType = "deposit";
+    public static String withdrawType = "withdraw";
+    public static String transferType = "transfer";
 
-    
     /**
      * 
-     * @param request: string representing transaction type
-     * @param amount: amount to be deposited, withdrawn or transferred
-     * @param account1: deposit/withdraw account in deposit and withdraw transactions respectively
-     * @param account2: in a transfer transaction, the amount is deposited into this account
+     * @param type:           string representing transaction type to be returned
+     * @param amount:         amount to be deposited, withdrawn or transferred
+     * @param depositAccount: money is deposited in this account
+     * @param account2:       money is withdrawn from this account
      * @return the appropriate transaction based on the request
      */
-    public static Transaction getTransaction(String request, double amount, BankAccount account1, BankAccount account2){
-        Transaction newTransac;
-        if (request.equals(requestTypes[0])){
-            newTransac = new DepositTransaction(amount, account1);
+    public static Transaction getTransaction(String type, double amount, BankAccount depositAccount,
+            BankAccount withdrawAccount) {
+        if (type.equals(depositType)) {
+            return new DepositTransaction(amount, depositAccount);
+        } else if (type.equals(withdrawType)) {
+            return new WithdrawTransaction(amount, withdrawAccount);
+        } else if (type.equals(transferType)) {
+            return new TransferTransaction(amount, depositAccount, withdrawAccount);
         }
-        else if (request.equals(requestTypes[1])){
-            newTransac = new WithdrawTransaction(amount, account1);
-        }
-        else if (request.equals(requestTypes[2])){
-            newTransac = new TransferTransaction(amount, account2, account1);
-        }
-        else{
-            newTransac = null;
-        }
-        return newTransac;
+        return null;
+    }
+
+    public static String getDepositType() {
+        return depositType;
+    }
+
+    public static String getWithdrawType() {
+        return withdrawType;
+    }
+
+    public static String getTransferType() {
+        return transferType;
     }
 }
