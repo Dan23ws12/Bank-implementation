@@ -1,0 +1,53 @@
+<!DOCTYPE hmtl>
+<html lang = "en">
+    <head>
+        <title> Mighty arrows Bank</title>
+        <style>
+            img {
+                color: cadetblue;
+                background-color: black;
+                width: 100px;
+                height: 100px;
+            }
+            h1 {
+                font-size: 300%;
+                font-family: 'Times New Roman', Times, serif;
+                color: aqua;
+                background-color:  gold;
+                text-align: center;
+            }
+            body {
+                background-color:azure;
+                text-align: center;
+            }
+            button {
+                height: 20px;
+                width: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>
+            <img src="Mighty Arrow logo.png" alt="mighty arrows logo">
+            Welcome to Mighty arrows bank
+        </h1>
+        <form >
+             Username <br> 
+             <input type="text" id="user1" name="user1"> <br> 
+             Type of transaction <br>
+             <select id="transactype" name="transactype">
+                <option value="deposit"> Deposit</option>
+                <option value="withdraw"> Withdrawal</option>
+             </select> <br>
+             <button type="button" name="Enter" onclick="committed()" > 
+                Submit <br>
+             </button>
+        </form>
+        <p id = "ps"> </p>
+        <script>
+            function committed(){
+                document.getElementById("ps").innerHTML =document.getElementById("user1");
+            }
+        </script>  
+    </body>
+</html>

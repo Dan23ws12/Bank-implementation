@@ -1,4 +1,4 @@
-CREATE TABLE AS Model.BankAccount(
+CREATE TABLE AS BankAccount(
     username VARCHAR PRIMARY KEY,
     firstName VARCHAR,
     lastName VARCHAR,
@@ -6,12 +6,12 @@ CREATE TABLE AS Model.BankAccount(
 );
 /* logs all transactions done and the date of transaction
 */
-CREATE TABLE AS Transactions.Transaction(
+CREATE TABLE AS Transaction(
     amount FLOAT CHECK (amount >= 0),
     fromCus VARCHAR NOT NULL,
     toCus VARCHAR,
     date DATE,
-    FOREIGN KEY (toCus, fromCus) REFERENCES Model.BankAccount (username)
+    FOREIGN KEY (toCus, fromCus) REFERENCES BankAccount (username) 
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
@@ -24,7 +24,7 @@ CREATE OR REPLACE FUNCTION maxAmount()
     AS 
 $$   
 BEGIN
-    IF ((SELECT SUM(amount) FROM Transactions.Transaction t WHERE
+    IF ((SELECT SUM(amount) FROM Transaction t WHERE 
         NEW.fromCus = t.fromCus AND 
         extract(year from NEW.date) = extract(year from t.date) AND
         extract(month FROM NEW.date) = extract (month FROM t.date)) > 1000) THEN
@@ -35,6 +35,6 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 CREATE TRIGGER maxAmountTrigger
-    BEFORE INSERT ON Transactions.Transaction
+    BEFORE INSERT ON Transaction
     EXECUTE FUNCTION maxAmount();
 

@@ -1,11 +1,13 @@
+package Model;
 
 public class BankAccount {
     private double balance;
-    private String customerName;
-    private String customerId;// unique identifier for a customer
-    private static int BASE_AMOUNT = 200;
+    private final String customerName;
+    private final String customerId;// unique identifier for a customer
+    private static final double  LOWEST_BALANCE = 0;
 
     public BankAccount(String customerName, String customerId) {
+        int BASE_AMOUNT = 200;
         this.customerName = customerName;
         this.customerId = customerId;
         this.balance = BASE_AMOUNT;
@@ -15,7 +17,10 @@ public class BankAccount {
      * returns true if the two accounts are the same
      */
     public boolean equals(BankAccount account2) {
-        return (this.customerId.equals(account2.customerId));
+        if (account2 != null){
+            return (this.customerId.equals(account2.customerId));
+        }
+        return false;
     }
 
     /**
@@ -35,14 +40,18 @@ public class BankAccount {
      * returns true if the money was withdrawn, false otherwise
      */
     public boolean withdraw(double amt) {
-        if (balance >= amt) {
+        if (balance -amt>= LOWEST_BALANCE) {
             this.balance -= amt;
             return true;
         }
         return false;
     }
 
-    public String getName() {
+    protected void setLowestBalance(Double balance){
+
+    }
+
+    public String getCustomerName(){
         return this.customerName;
     }
 
